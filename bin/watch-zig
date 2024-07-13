@@ -1,0 +1,27 @@
+#!/bin/bash
+
+echo "Watching source...";
+if [ -z "$1" ]; then
+    echo "[run] mode";
+else
+    echo "[test] mode";
+fi
+chsum1=""
+
+while [[ true ]]
+do
+    # chsum2=`find src/ -type f -exec md5sum {} \;`
+    chsum2=`ls src/**.zig --full-time $file | awk '{ print $7 }'`
+    if [[ $chsum1 != $chsum2 ]] ; then
+        if [ -n "$chsum1" ]; then
+            clear
+            if [ -z "$1" ]; then
+                zig build run
+            else
+                zig build test
+            fi
+        fi
+        chsum1=$chsum2
+    fi
+    sleep 2
+done
